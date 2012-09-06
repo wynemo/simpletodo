@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>todo</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<!--$if mobile is not None:
+    <meta content='width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;' name='viewport' />-->
+<!--<link rel="stylesheet" type="text/css" href="/static/bootstrap.css"/>-->
+<script type="text/javascript" 
+        src="//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"> 
+</script>
+<!-- <link rel="stylesheet" type="text/css" href="/static/501fun.css">-->
+<style type="text/css">
+body {
+    padding: 0px;
+    margin: 0px;
+    font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", STHeiti !important;
+    background-color: #fff;
+    -webkit-text-size-adjust: none;
+}
+</style>
+</head>
+
+<body>
+
+
+<!--
+<script type="text/javascript">
+(function($$, window) {
+
+    $$(function() { 
+    var message1 = $$.ajax({
+            type: "POST",
+            url: "/todo"+ "?random=" + Math.random(),
+            async: false
+         }).responseText;
+    $$('#tolinks').prepend($$(message1));
+    });
+})(jQuery,this);
+</script>
+-->
+
+<script type="text/javascript">
+function add() {  
+    try{
+    var dataString = 'status=' +
+        encodeURIComponent($$("input#status").val());
+    var message1 = $$.ajax({
+       type: "POST",
+       url: "/todo/add",
+      data: dataString,
+      async: false 
+    }).responseText;
+   $$('#tolinks').prepend($$(message1));
+   $$('#status').val('');
+   //alert(message1);
+   }
+   catch(e){
+   }
+   return false;
+ 
+}
+
+function del(id1){
+               try{
+      var message = $$.ajax({
+          type: 'POST',
+          data: 'id=' + id1,
+          url: '/todo/delete',
+          async:false
+        }).responseText;
+        if(message == id1)
+        {
+            var tmp = '#' + id1;
+            //alert($$(tmp));
+            $$(tmp).parent().remove();
+        }}
+       catch(e){
+           alert(e);
+      }
+      return false;
+    }
+
+</script>
+
+<div class="container">
+<form id="addlinkform">
+<p><input type="text" name="status" id="status" />
+<input class="buttonadd" type="submit" value="Add" onclick="return add();"/>
+</p>
+</form>
+
+<div id="tolinks">
+{% for time1,id1,text1 in texts %}
+    <div >
+        <div class='content'>
+            {% for element1,attr1 in text1 %}
+                {% if attr1 is not None%}
+                    <a href='{{element1}}' class='tl_link'>{{element1}}</a>
+                {% else %}
+                    {{element1}}
+                {% end if %}
+            {% end %}
+        </div>
+        <div><span><span>$time1</span></span></div>
+        <a  onclick="return del(this.id);" href='/todo/delete' id='{{id1}}' class='delete_links'>delete</a>
+    </div>
+{% end %}
+</div>
+</div>
+     
+</body>
+</html>
