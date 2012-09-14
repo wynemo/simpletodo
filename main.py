@@ -168,7 +168,8 @@ class LogoutHandler(BaseHandler):
 
 def main():
     parse_command_line()
-    parse_config_file(options.flagfile)
+    flagfile = os.path.join(os.path.dirname(__file__), options.flagfile)
+    parse_config_file(flagfile)
 
     settings = dict(
         login_url='/todo/login',
